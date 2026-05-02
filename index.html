@@ -442,5 +442,25 @@
 
     <!-- 添加弹窗和URL搜索参数处理脚本 -->
     <script src="js/index-page.js"></script>
+    <script>
+  // 页面加载完成后，强制覆盖所有Referrer设置
+  window.addEventListener('load', () => {
+    document.referrerPolicy = 'unsafe-url';
+    
+    // 每500ms检查一次，防止被LibreTV再次修改
+    setInterval(() => {
+      if (document.referrerPolicy !== 'unsafe-url') {
+        document.referrerPolicy = 'unsafe-url';
+      }
+      
+      // 自动刷新所有未加载的豆瓣图片
+      document.querySelectorAll('img').forEach(img => {
+        if (img.src.includes('doubanio.com') && img.naturalHeight === 0) {
+          img.src = img.src.split('?')[0] + '?t=' + Date.now();
+        }
+      });
+    }, 500);
+  });
+</script>
 </body>
 </html>
